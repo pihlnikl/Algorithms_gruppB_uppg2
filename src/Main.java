@@ -1,9 +1,9 @@
 import java.io.*;
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) throws IOException, FileFormatException {
@@ -170,11 +170,53 @@ class Vertex {
 
 //TODO: Skapa Queue klass
 class Queue {
-    public void enqueue() {
 
+    private class Node {
+	// Used to hold references to nodes for the linked queue implementation
+		private Vertex info;
+		private Node link;
+	}
+
+    private Node first;
+    private Node last;
+
+    //Creates an empty queue
+    public Queue() {
+        first = null;
+        last = null;
     }
 
-    public void dequeue() {
-
+    public void enqueue(Vertex v) {
+    //Adds element at the rear of the queue
+        Node newNode = new Node();
+        newNode.info = v;
+        newNode.link = null;
+        if (last == null) {
+        //If we are inserting into an empty queue
+            first = newNode;
+        }
+        else {
+            last.link = newNode;
+        }
+        last = newNode;
     }
+
+    public Vertex dequeue() {
+        if (!isEmpty()) {
+            Vertex toReturn = first.info;
+            first = first.link;
+            if (first == null) {
+                last = null;
+            }
+            return toReturn;
+        }
+        else {
+            System.out.print("Dequeue attempted on empty queue!");
+            return null;
+        }
+    }
+    public boolean isEmpty() {
+	// Checks if queue is empty
+		return (last == null);
+	}
 }
