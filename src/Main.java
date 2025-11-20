@@ -1,5 +1,9 @@
 import java.io.*;
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws IOException, FileFormatException {
@@ -19,13 +23,13 @@ public class Main {
     // Read in a graph from a file and print out the nodes and edges
     public static void readGraph(File selectedFile) throws IOException, FileFormatException {
 
+        Graph g = new Graph();
         BufferedReader r = new BufferedReader(new FileReader(selectedFile));
         String line=null;
 
         try {
             // Skip over comment lines in the beginning of the file
             while ( !(line = r.readLine()).equalsIgnoreCase("[Vertex]") ) {} ;
-            System.out.println(); System.out.println("Nodes:");
 
             // Read all vertex definitions
             while (!(line=r.readLine()).equalsIgnoreCase("[Edges]") ) {
@@ -35,8 +39,9 @@ public class Main {
                         String[] nodeNames=line.split(",");
 
                         for (String n:nodeNames) {
-                            System.out.println(n.trim() );   // Trim and print the node name
-                            // Here you should create a node in the graph
+                            String node = n.trim();
+                            // Add node to graph
+                            g.addNode(node);
                         }
 
                     } catch (Exception e) {   // Something wrong in the graph file
@@ -50,7 +55,6 @@ public class Main {
             throw new FileFormatException(" No [Vertex] or [Edges] section found in the file " + selectedFile.getName());
         }
 
-        System.out.println(); System.out.println("Edges:");
         // Read all edge definitions
         while ( (line=r.readLine()) !=null ) {
             if (line.trim().length() > 0) {  // Skip empty lines
@@ -59,8 +63,10 @@ public class Main {
 
                     for (String e:edges) {       // For all edges
                         String[] edgePair = e.trim().split(":"); //Split edge components v1:v2
-                        System.out.println (edgePair[0].trim() + " " + edgePair[1].trim() );
-                        // Here you should create an edge in the graph
+                        String v = edgePair[0].trim();
+                        String w = edgePair[1].trim();
+                        // Add edges to graph
+                        g.addEdge(v, w);
                     }
 
                 } catch (Exception e) { //Something is wrong, Edges should be in format v1:v2
@@ -70,8 +76,8 @@ public class Main {
             }
         }
         r.close();  // Close the reader
+        g.printGraph();
     }
-
 }
 
 @SuppressWarnings("serial")
@@ -79,21 +85,69 @@ class FileFormatException extends Exception { //Input file has the wrong format
     public FileFormatException(String message) {
         super(message);
     }
-
 }
 
+class Graph {
+    // Save nodes/vertex as a Map, for easier access to Vertex object
+    Map<String, Vertex> nodes;
 
-//TODO: Skapa Vertex klass?
-public class Vertex {
+    public Graph() {
+        nodes = new HashMap<>();
+    }
+    // Create Vertex using given string, add to nodes
+    public void addNode(String name) {
+        nodes.put(name, new Vertex(name));
+    }
+    // Get the source Vertex and destination Vertex from nodes by searching with the given string
+    public void addEdge(String v, String w) {
+        Vertex source = nodes.get(v);
+        Vertex destination = nodes.get(w);
+        // Add destination as adjacent to source, increase indegree of destination
+        source.addAdjacentNode(destination);
+        destination.addDegree();
+    }
 
+    // Print, for troubleshooting
+    public void printGraph() {
+        for (String vertex : nodes.keySet()) {
+            for (Vertex edges : nodes.get(vertex).adjacentNodes) {
+                System.out.println (vertex + " -> " + edges.name );
+            }
+        }
+    }
 }
 
-public void topSort() throws CycleFound {
+class Vertex {
+    String name;
+    int indegree;
+    List<Vertex> adjacentNodes;
+
+    public Vertex(String name) {
+        this.name = name;
+        this.indegree = 0;
+        this.adjacentNodes = new ArrayList<>();
+    }
+
+    public void addAdjacentNode(Vertex node) {
+        this.adjacentNodes.add(node);
+    }
+
+    public void addDegree() {
+        this.indegree++;
+    }
+
+    public int getIndegree() {
+        return indegree;
+    }
+}
+
+/*void topSort() throws CycleFound {
     Queue q;
+    Graph g;
     int counter = 0;
     Vertex v, w;
     q = new Queue();
-    for each vertex v {
+    for vertex v {
         if (v.indegree == 0) {
             q.enqueue(v);
         }
@@ -101,7 +155,6 @@ public void topSort() throws CycleFound {
     while (!q.isEmpty()) {
         v = q.dequeue();
         v.topNum = ++counter;
-        //TODO: Fix this
         for each v.neighbours {
             if (--w.indegree == 0) {
                 q.enqueue(w);
@@ -111,12 +164,12 @@ public void topSort() throws CycleFound {
     if (counter != Num_Vert) {
         throw new CycleFound();
     }
-}
+}*/
 
 //TODO: CycleFound -> Print text when cycle found
 
-//TODO: Skapa Queue klass?
-public class Queue {
+//TODO: Skapa Queue klass
+class Queue {
     public void enqueue() {
 
     }
