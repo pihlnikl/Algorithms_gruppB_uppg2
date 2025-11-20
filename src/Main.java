@@ -81,15 +81,18 @@ class FileFormatException extends Exception { //Input file has the wrong format
     }
 
 }
-//TODO: Skapa Node klass?
+
+
 //TODO: Skapa Vertex klass?
+public class Vertex {
+
+}
 
 public void topSort() throws CycleFound {
     Queue q;
     int counter = 0;
     Vertex v, w;
     q = new Queue();
-    boolean isCycle = false;
     for each vertex v {
         if (v.indegree == 0) {
             q.enqueue(v);
@@ -98,6 +101,7 @@ public void topSort() throws CycleFound {
     while (!q.isEmpty()) {
         v = q.dequeue();
         v.topNum = ++counter;
+        //TODO: Fix this
         for each v.neighbours {
             if (--w.indegree == 0) {
                 q.enqueue(w);
@@ -109,9 +113,11 @@ public void topSort() throws CycleFound {
     }
 }
 
+//TODO: CycleFound -> Print text when cycle found
+
 //TODO: Skapa Queue klass?
 public class Queue {
-    public void enqueue(Node n) {
+    public void enqueue() {
 
     }
 
