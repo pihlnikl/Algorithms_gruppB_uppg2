@@ -74,11 +74,35 @@ public class Main {
 
 }
 
-
 @SuppressWarnings("serial")
 class FileFormatException extends Exception { //Input file has the wrong format
     public FileFormatException(String message) {
         super(message);
     }
 
+}
+
+public class topSort {
+    Queue q;
+    int counter = 0;
+    Vertex v, w;
+    q = new Queue();
+    boolean isCycle = false;
+    for each vertex v {
+        if (v.indegree == 0) {
+            q.enqueue(v);
+        }
+    }
+    while(!q.isEmpty()) {
+        v = q.dequeue();
+        v.topNum = ++counter;
+        for each v.neighbours {
+            if (--w.indegree == 0) {
+                q.enqueue(w);
+            }
+        }
+    }
+    if (counter != Num_Vert) {
+        isCycle = true;
+    }
 }
