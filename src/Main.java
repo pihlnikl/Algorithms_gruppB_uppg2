@@ -11,17 +11,21 @@ public class Main {
         // Choose a file in the folder Graphs in the current directory
         JFileChooser jf = new JFileChooser("Graphs");
         int result = jf.showOpenDialog(null);
+		File selectedFile = jf.getSelectedFile();
+        Graph g = readGraph(selectedFile);
+        TopSort topSort = new TopSort();
 
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = jf.getSelectedFile();
-            //System.out.println("Selected file: " + selectedFile.getAbsolutePath());   // Debug
-
-            readGraph(selectedFile);    // Read nodes and edges from the selected file
+        try {
+            topSort.TopSort(g);
+            System.out.println("No cycle in graph");
+        }
+        catch (CycleFound e){
+            System.out.println(e.getMessage());
         }
     }
 
-    // Read in a graph from a file and print out the nodes and edges
-    public static void readGraph(File selectedFile) throws IOException, FileFormatException {
+    // Read in a graph from a file, print out the adjacency list, returns the graph
+    public static Graph readGraph(File selectedFile) throws IOException, FileFormatException {
 
         Graph g = new Graph();
         BufferedReader r = new BufferedReader(new FileReader(selectedFile));
@@ -76,7 +80,8 @@ public class Main {
             }
         }
         r.close();  // Close the reader
-        g.printGraph();
+        g.printGraph(); // Prints the adjacency list
+		return g;
     }
 }
 
