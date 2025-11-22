@@ -141,9 +141,6 @@ class Vertex {
         this.indegree++;
     }
 
-    public int getIndegree() {
-        return indegree;
-    }
 }
 
 class TopSort {
