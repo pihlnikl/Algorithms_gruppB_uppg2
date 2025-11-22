@@ -146,30 +146,48 @@ class Vertex {
     }
 }
 
-/*void topSort() throws CycleFound {
-    Queue q;
-    Graph g;
-    int counter = 0;
-    Vertex v, w;
-    q = new Queue();
-    for vertex v {
-        if (v.indegree == 0) {
-            q.enqueue(v);
+class TopSort {
+
+    public void TopSort(Graph g) throws CycleFound {
+
+        Map<Vertex, Integer> indegree = new HashMap<>();
+        int counter = 0;
+        boolean cycleFound = false;
+
+        // Add indegree for each node
+        for (Vertex v : g.nodes.values()) {
+            indegree.put(v, v.indegree);
         }
-    }
-    while (!q.isEmpty()) {
-        v = q.dequeue();
-        v.topNum = ++counter;
-        for each v.neighbours {
-            if (--w.indegree == 0) {
-                q.enqueue(w);
+
+        Queue q = new Queue();
+
+        // Enqueue zero-indegree vertices
+        for (Vertex v : g.nodes.values()) {
+            if (indegree.get(v) == 0) {
+                q.enqueue(v);
             }
         }
+
+        while (!q.isEmpty()) {
+
+            Vertex v = q.dequeue();
+            counter++;
+
+            // Add indegree for each adjacent node
+            for (Vertex w : v.adjacentNodes) {
+                indegree.put(w, indegree.get(w) - 1);
+                if (indegree.get(w) == 0) {
+                    q.enqueue(w);
+                }
+            }
+        }
+
+        if (counter != g.nodes.size()) {
+            throw new CycleFound("Cycle found in graph");
+        }
+
     }
-    if (counter != Num_Vert) {
-        throw new CycleFound();
-    }
-}*/
+}
 
 //TODO: CycleFound -> Print text when cycle found
 // CycleFound
