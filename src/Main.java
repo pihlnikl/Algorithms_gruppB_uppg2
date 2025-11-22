@@ -167,6 +167,12 @@ class Vertex {
 }*/
 
 //TODO: CycleFound -> Print text when cycle found
+// CycleFound
+class CycleFound extends Exception{
+    public CycleFound(String message){
+        super(message);
+    }
+}
 
 //TODO: Skapa Queue klass
 class Queue {
